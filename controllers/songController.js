@@ -18,30 +18,6 @@ exports.song_list = function (req, res, next) {
         })
 };
 
-exports.song_detail = function (req, res, next) {
-    async.parallel({
-        song: function (callback) {
-            Song.findById(req.params.id)
-                 .populate('user')
-                .exec(callback)
-        }
-    }, function (err, results) {
-        if (err) {
-            return next(err);
-        }
-        if (results.song == null) {
-            //no results
-            var err = new Error('Song not found');
-            err.status = 404;
-            return next(err);
-        }
-        res.send(
-            results.song
-        );
-    });
-};
-
-
 exports.song_create = [
     body('title', 'Title must not be empty.').isLength({min: 1}).trim(),
     // body('user', 'User must not be empty.').isLength({min: 1}).trim(),
@@ -84,8 +60,46 @@ exports.song_create = [
     }
 ];
 
+exports.song_detail = function (req, res, next) {
+    async.parallel({
+        song: function (callback) {
+            Song.findById(req.params.id)
+                 .populate('user')
+                .exec(callback)
+        }
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        if (results.song == null) {
+            //no results
+            var err = new Error('Song not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.send(
+            results.song
+        );
+    });
+};
+
 exports.song_delete = function (req, res) {
-    res.send('NOT IMPLEMENTED:')
+
+    async.parallel({
+        //may need for implementation here
+    }, function(err, results){
+        Song.findByIdAndRemove(req.params.id, function deleteSong(err){
+            if(err){
+                return next(err);
+            }
+            res.send({
+                message: 'successfully deleted',
+                id: req.params.id
+            })
+        })
+
+    })
+
 };
 
 exports.song_update = [
