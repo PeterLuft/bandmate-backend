@@ -11,7 +11,7 @@ var UserSchema = new Schema({
 });
 
 UserSchema.statics.authenticate = function(email, password, callback){
-    User.find({email: email})
+    this.findOne({email: email})
         .exec(function(err, user){
             if(err){
                 return callback(err);
@@ -21,30 +21,31 @@ UserSchema.statics.authenticate = function(email, password, callback){
                 err.status = 401;
                 return callback(err);
             }
+
             bcrypt.compare(password, user.password, function(err, result){
-               if(result === true){
-                   return callback(null, user);
-               }
-               else{
-                   return callback();
-               }
+                if(result == true){
+                    return callback(null, user);
+                }
+                else{
+                    return callback();
+                }
             });
 
         })
 }
 
 
-// UserSchema.pre('save', function(next){
-//    var user = this;
-//
-//    bcrypt.hash(user.password, 10, function(err, hash){
-//        if(err){
-//            return next(err);
-//        }
-//        user.password = hash;
-//        next();
-//    })
-// });
+UserSchema.pre('save', function(next){
+   var user = this;
+
+   bcrypt.hash(user.password, 10, function(err, hash){
+       if(err){
+           return next(err);
+       }
+       user.password = hash;
+       next();
+   })
+});
 
 
 

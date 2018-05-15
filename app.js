@@ -1,7 +1,9 @@
 var createError = require('http-errors');
 var express = require('express');
 var config = require('./config');
+var auth = require('./authorization/auth');
 var session = require('express-session');
+var mw = require('./middleware/middlewares');
 
 //set up mongoose connection
 var connectionString = require('./config').DB;
@@ -40,14 +42,8 @@ app.use(function(req, res, next) {
     next();
 });
 //
-// app.use('/songs', require('./middleware/auth'));
-// app.use('/parts', require('./middleware/auth'))
-
-// app.use(session({
-//     secret: config.JWT_SECRET,
-//     resave: true,
-//     saveUninitialized: false
-// }));
+app.all('/songs', mw.verify_JWT_MW);
+app.all('/users', mw.verify_JWT_MW);
 
 app.use('/', indexRouter);
 app.use('/songs', songsRouter);

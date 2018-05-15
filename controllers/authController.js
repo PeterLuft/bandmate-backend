@@ -1,4 +1,5 @@
 var User = require('../models/user');
+var auth = require('../authorization/auth');
 
 const {body, validationResult} = require('express-validator');
 const {sanitizeBody} = require('express-validator');
@@ -13,10 +14,14 @@ exports.login = function(req, res, next){
             return next(err);
         }
         else{
-            req.session.userId = user._id;
+         //   req.session.userId = user._id;
             res.send({
                 title: 'Successful authentication',
-                user: user
+                user: user,
+                token: auth.createJWT({
+                    sessionData: user,
+                    maxAge: 3600
+                })
 
             })
         }

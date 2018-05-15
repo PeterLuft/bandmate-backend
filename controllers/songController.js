@@ -8,6 +8,11 @@ const {sanitizeBody} = require('express-validator/filter');
 
 //get all songs
 exports.song_list = function (req, res, next) {
+
+    var user = req.user._doc;
+
+    console.log(user);
+
     Song.find({}, 'title parts')
         .populate('user')
         .exec(function (err, list_songs) {
