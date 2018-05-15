@@ -38,9 +38,9 @@ testem.log
 # e2e
 /e2e/*.js
 /e2e/*.map
-
+git
 # System Files
 .DS_Store
 Thumbs.db
 
-keys.js
+config.js

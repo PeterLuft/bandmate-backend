@@ -1,8 +1,10 @@
 var createError = require('http-errors');
 var express = require('express');
+var config = require('./config');
+var session = require('express-session');
 
 //set up mongoose connection
-var connectionString = require('./keys');
+var connectionString = require('./config').DB;
 var mongoose = require('mongoose');
 mongoose.connect(connectionString);
 mongoose.Promise = global.Promise;
@@ -17,6 +19,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var songsRouter = require('./routes/songs');
 var partsRouter = require('./routes/parts');
+var authRouter = require('./routes/auth');
 
 var app = express();
 
@@ -36,11 +39,22 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Methods", "*");
     next();
 });
+//
+// app.use('/songs', require('./middleware/auth'));
+// app.use('/parts', require('./middleware/auth'))
+
+// app.use(session({
+//     secret: config.JWT_SECRET,
+//     resave: true,
+//     saveUninitialized: false
+// }));
 
 app.use('/', indexRouter);
 app.use('/songs', songsRouter);
 app.use('/users', usersRouter);
 app.use('/parts', partsRouter);
+app.use('/auth', authRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

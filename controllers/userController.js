@@ -48,15 +48,15 @@ exports.user_detail = function (req, res, next) {
 };
 
 exports.user_create = [
-    body('first_name').isLength({min: 1}).trim().withMessage('First name must be specified.')
-        .isAlphanumeric().withMessage('First name has invalid characters'),
-    body('last_name').isLength({min: 1}).trim().withMessage('Last name must be specified.')
-        .isAlphanumeric().withMessage('Last name has invalid characters'),
-    body('email').isLength({min: 1}).trim().withMessage('Email must be specified.'),
-
-    sanitizeBody('first_name').trim().escape(),
-    sanitizeBody('last_name').trim().escape(),
-    sanitizeBody('email').trim().escape(),
+    // body('first_name').isLength({min: 1}).trim().withMessage('First name must be specified.')
+    //     .isAlphanumeric().withMessage('First name has invalid characters'),
+    // body('last_name').isLength({min: 1}).trim().withMessage('Last name must be specified.')
+    //     .isAlphanumeric().withMessage('Last name has invalid characters'),
+    // body('email').isLength({min: 1}).trim().withMessage('Email must be specified.'),
+    //
+    // sanitizeBody('first_name').trim().escape(),
+    // sanitizeBody('last_name').trim().escape(),
+    // sanitizeBody('email').trim().escape(),
 
     (req, res, next) => {
 
@@ -73,20 +73,23 @@ exports.user_create = [
             return;
         }
         else {
-            var user = new User({
-                first_name: req.body.first_name,
-                last_name: req.body.last_name,
+            var userData = {
                 email: req.body.email,
-                date_joined: new Date()
-            });
-            user.save(function (err) {
-                if (err) {
+                username: req.body.username,
+                password: req.body.password,
+                passwordConf: req.body.passwordConf
+            };
+
+            User.create(userData, function(err, user){
+                if(err){
                     return next(err);
                 }
-                res.send({
-                    user: user
-                });
-            });
+                else{
+                    res.send({
+                        title: 'User created'
+                    })
+                }
+            })
         }
     }
 

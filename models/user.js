@@ -1,24 +1,52 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
 
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-    first_name: {type: String, required: true, max: 100},
-    last_name: {type: String, required: true, max: 100},
-    email: {type: String, required: true, max: 100},
-    date_joined: {type: Date},
+    email: {type: String, required: true, trim: true},
+    username: {type: String, required: true, trim: true},
+    password: {type: String, required: true},
+    passwordConf: {type: String, required: true}
 });
 
-UserSchema
-.virtual('name')
-.get(function() {
-    return this.last_name + ', ' + this.first_name;
-});
+UserSchema.statics.authenticate = function(email, password, callback){
+    User.find({email: email})
+        .exec(function(err, user){
+            if(err){
+                return callback(err);
+            }
+            else if(!user){
+                var err = new Error('User not found');
+                err.status = 401;
+                return callback(err);
+            }
+            bcrypt.compare(password, user.password, function(err, result){
+               if(result === true){
+                   return callback(null, user);
+               }
+               else{
+                   return callback();
+               }
+            });
 
-UserSchema
-.virtual('url')
-.get(function() {
-   return '/users/' + this._id
-});
+        })
+}
+
+
+// UserSchema.pre('save', function(next){
+//    var user = this;
+//
+//    bcrypt.hash(user.password, 10, function(err, hash){
+//        if(err){
+//            return next(err);
+//        }
+//        user.password = hash;
+//        next();
+//    })
+// });
+
+
+
 
 module.exports = mongoose.model('User', UserSchema);
