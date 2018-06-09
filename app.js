@@ -44,6 +44,7 @@ app.use(function(req, res, next) {
 //
 app.all('/songs', mw.verify_JWT_MW);
 app.all('/users', mw.verify_JWT_MW);
+app.all('/parts', mw.verify_JWT_MW);
 
 app.use('/', indexRouter);
 app.use('/songs', songsRouter);

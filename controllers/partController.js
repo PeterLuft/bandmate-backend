@@ -68,9 +68,38 @@ exports.part_delete = function(req, res, next) {
 
 };
 
-exports.part_update = function(req, res, next) {
-    //implement part update here
-};
+exports.part_update = [
+    body('name', 'Name must not be empty').isLength({min: 1}).trim(),
+
+    sanitizeBody('title').trim().escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        var toUpdate = {
+            name: req.body.name,
+            description: req.body.description
+        };
+
+        if(!errors.isEmpty()){
+            res.send({
+                title: 'Update part',
+                errors: errors.array()
+            });
+        }
+        else{
+            Part.findByIdAndUpdate(req.params.id, toUpdate, {new: true}, function(err, updatedPart){
+               if(err){
+                   return next(err);
+               }
+               res.send(updatedPart);
+            });
+        }
+
+
+    }
+
+];
 
 
 

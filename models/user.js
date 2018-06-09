@@ -7,7 +7,8 @@ var UserSchema = new Schema({
     email: {type: String, required: true, trim: true},
     username: {type: String, required: true, trim: true},
     password: {type: String, required: true},
-    passwordConf: {type: String, required: true}
+    passwordConf: {type: String, required: true},
+    parts: [{type: Schema.Types.ObjectId, ref: 'Part'}]
 });
 
 UserSchema.statics.authenticate = function(email, password, callback){
