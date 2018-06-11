@@ -22,11 +22,14 @@ exports.part_create = [
 
     (req, res, next) => {
         const errors = validationResult(req);
+        var user = req.user._doc._id;
+
 
         var part = new Part(
             {
                 name: req.body.name,
-                description: req.body.description
+                description: req.body.description,
+                user: user
             }
         )
 

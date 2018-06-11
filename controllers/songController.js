@@ -9,7 +9,9 @@ const {sanitizeBody} = require('express-validator/filter');
 //get all songs
 exports.song_list = function (req, res, next) {
 
-    var user = req.user._doc;
+    //get all songs for this user
+
+    var user = req.user._doc._id;
 
     console.log(user);
 
@@ -31,10 +33,12 @@ exports.song_create = [
     (req, res, next) => {
         const errors = validationResult(req);
 
+        var user = req.user._doc._id;
+
         var song = new Song(
             {
                 title: req.body.title,
-                // user: req.body.user,
+                user: user,
                 parts: []
             }
         )
@@ -130,7 +134,7 @@ exports.song_update = [
             });
         }
         else{
-            Song.findByIdAndUpdate(req.params.id, toUpdate, {new: true}, function(err, updatedSong){
+            Song.findByIdAndUpdate(req.params.id,  toUpdate, {new: true}, function(err, updatedSong){
                 if(err){
                     return next(err);
                 }

@@ -6,8 +6,11 @@ var Schema = mongoose.Schema;
 var UserSchema = new Schema({
     email: {type: String, required: true, trim: true},
     username: {type: String, required: true, trim: true},
+    firstname: {type: String, required: true, trim: true},
+    lastname: {type: String, required: true, trim: true},
     password: {type: String, required: true},
     passwordConf: {type: String, required: true},
+    songs: [{type: Schema.Types.ObjectId, ref: 'Song'}],
     parts: [{type: Schema.Types.ObjectId, ref: 'Part'}]
 });
 

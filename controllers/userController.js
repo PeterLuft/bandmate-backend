@@ -77,7 +77,11 @@ exports.user_create = [
                 email: req.body.email,
                 username: req.body.username,
                 password: req.body.password,
-                passwordConf: req.body.passwordConf
+                passwordConf: req.body.passwordConf,
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                parts: [],
+                songs: []
             };
 
             User.create(userData, function(err, user){
