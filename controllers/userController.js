@@ -9,6 +9,7 @@ const {sanitizeBody} = require('express-validator/filter');
 exports.user_list = function (req, res, next) {
     User.find()
         .sort([['last_name', 'ascending']])
+        .populate('songs')
         .exec(function (err, list_users) {
             if (err) {
                 return next(err);
